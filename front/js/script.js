@@ -52,5 +52,4 @@ const p = document.createElement("p")
 p.textContent = description
 p.classList.add("productDescription")
 return p
-
 } 
