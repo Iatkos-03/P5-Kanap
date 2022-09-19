@@ -3,7 +3,7 @@ const urlParams = new URLSearchParams(queryString)
 const id = urlParams.get("id")
 if (id != null) {
     let itemPrice = 0
-    let imagUrl,altTexte
+    let imagUrl, altTexte, articleName
 }
 
 fetch(`http://localhost:3000/api/products/${id}`)
@@ -21,14 +21,15 @@ function operateKanap(kanap) {
     itemPrice = price
     imagUrl = imageUrl
     altTexte = altTxt
-    makeImage(imageUrl, altTxt)
+    articleName = name
+    constructImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
-    makeDescription(description)
+    constructDescription(description)
     makeColors(colors)
 }
 
-function makeImage(imageUrl, altTxt) {
+function constructImage(imageUrl, altTxt) {
    const image = document.createElement("img")
    image.src = imageUrl
    image.alt = altTxt
@@ -46,7 +47,7 @@ function makePrice(price) {
     const span = document.querySelector("#price")
     if (span != null) span.textContent = price
 }
-function makeDescription(description) {
+function constructDescription(description) {
     const p = document.querySelector("#description")
     if (p != null) p.textContent = description
 }
@@ -78,8 +79,11 @@ if (button !=null) {
             price: itemPrice,
             imageUrl: imagUrl,
             altTxt: altTexte,
+            name : articleName,
+        
         }
-        localStorage.setItem(id, JSON.stringify(fiche))
+        const newKey = `${id}-${color}`
+        localStorage.setItem(newKey, JSON.stringify(fiche))
         window.location.href = "cart.html"
     })
 }

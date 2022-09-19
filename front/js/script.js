@@ -9,7 +9,7 @@ function addProducts(data) {
     const altTxt = kanap.altTxt
     const name = kanap.name
     const description = kanap.description 
-    const image = makeImage(imageUrl, altTxt)
+    const image = constructImage(imageUrl, altTxt)
     const anchor = makeAnchor(_id)
     const article = document.createElement("article")
     const h3 = makeH3(name)
@@ -35,7 +35,7 @@ function appendArticleToAnchor(anchor, article) {
         anchor.appendChild(article)
     }
 }
-function makeImage(imagUrl, altTxt) {
+function constructImage(imagUrl, altTxt) {
     const image = document.createElement ("img")
     image.src = imagUrl
     image.alt = altTxt
