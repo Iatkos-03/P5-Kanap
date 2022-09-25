@@ -2,12 +2,10 @@ const cart = []
 
 ItemsCache()
 cart.forEach((item) => showItem(item)) 
-console.log (cart)
 function ItemsCache() {
     const numberOfItems = localStorage.length
     for (let i = 0; i < numberOfItems; i++) {
         const item = localStorage.getItem(localStorage.key(i)) || ""
-        console.log("objet en position ", i, "et" , item)
         const itemObjet = JSON.parse(item)
         cart.push(itemObjet)
     }
@@ -17,8 +15,8 @@ function showItem(item) {
     const imageDiv = constructImage(item)
     article.appendChild(imageDiv)
 
-    const cardItemContent = constructCartContent(item)
-    article.appendChild(cardItemContent)
+    const contentItem = constructCartContent(item)
+    article.appendChild(contentItem)
     showTotalPrice()
     showTotalQuantity()
     showArticle(article)  
@@ -28,6 +26,7 @@ function showTotalQuantity() {
     const totalQuantity = document.querySelector("#totalQuantity")
     const total = cart.reduce((total, item) => total + item.quantity, 0)
     totalQuantity.textContent = total
+    console.log(total)
 }
 function showTotalPrice() {
     const totalPrice = document.querySelector("#totalPrice")
@@ -35,17 +34,18 @@ function showTotalPrice() {
     totalPrice.textContent = total
   }
 function constructCartContent(item) {
-    const cardItemContent = document.createElement("div")
-    cardItemContent.classList.add("cart__item__content")
+    const contentItem = document.createElement("div")
+    contentItem.classList.add("cart__item__content")
 
     const description = constructDescription(item)
     const settings = constructSettings(item)
 
-    cardItemContent.appendChild(description)
-    cardItemContent.appendChild(settings)
-    return cardItemContent
+    contentItem.appendChild(description)
+    contentItem.appendChild(settings)
+    return contentItem
    
 }
+
 function constructSettings(item) {
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
@@ -55,10 +55,12 @@ function constructSettings(item) {
     
     return settings
 }
+
 function deleteSettings(settings,item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => itemDelete(item))
+
     const p = document.createElement("p")
     p.textContent = "Supprimer"
     div.appendChild(p)
@@ -70,7 +72,6 @@ function itemDelete(item) {
     (product) => product.id === item.id && product.color === item.color
     )
 cart.splice(deleteToItem, 1)
-console.log(cart)
 showTotalQuantity()
 showTotalPrice()
 deleteDataToCache(item)
@@ -91,7 +92,6 @@ function deleteArticle(item) {
 function quantitySettings(settings,item) {
     const quantity = document.createElement("div")
     quantity.classList.add("cart__item__content__settings__quantity")
-
     const p = document.createElement("p")
     p.textContent = "Qté : "
     quantity.appendChild(p)
@@ -112,7 +112,6 @@ function updatePriceAndQuantity(id, newValue, item) {
     const itemToUpdate = cart.find((item) => item.id === id)
     itemToUpdate.quantity = Number(newValue)
     item.quantity = itemToUpdate.quantity
-
     showTotalQuantity()
     showTotalPrice()
     saveNewDataToCache(item)
@@ -120,9 +119,9 @@ function updatePriceAndQuantity(id, newValue, item) {
 
 }
 function  saveNewDataToCache(item) {
-    const dataToSave = JSON.stringify((item))
-    const Key =`${item.id}-${item.color}`
-    localStorage.setItem(Key, dataToSave)
+    const dataToSave = JSON.stringify(item)
+    const key =`${item.id}-${item.color}`
+    localStorage.setItem(key, dataToSave)
 }
 
 
