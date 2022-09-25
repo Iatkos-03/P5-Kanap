@@ -1,4 +1,4 @@
-const cart = [] ; 
+const cart = []  
 
 ItemsCache()
 cart.forEach((item) => showItem(item)) 
@@ -19,30 +19,21 @@ function showItem(item) {
 
     const cardItemContent = constructCartContent(item)
     article.appendChild(cardItemContent)
-    showTotalPrice(item)
-    showTotalQuantity(item)
-    displayArticle(article)  
+    showTotalPrice()
+    showTotalQuantity()
+    showArticle(article)  
 
 }
-function showTotalQuantity(item) {
-    let total = 0
-    const TotalQuantity = document.querySelector("#totalQuantity")
-    cart.forEach((item) => {
-        const totalUniteQuantity = item.quantity
-        total += totalUniteQuantity
-        TotalQuantity.textContent = total
-   })
+function showTotalQuantity() {
+    const totalQuantity = document.querySelector("#totalQuantity")
+    const total = cart.reduce((total, item) => total + item.quantity, 0)
+    totalQuantity.textContent = total
 }
-function showTotalPrice(item) {
-    let total = 0
+function showTotalPrice() {
     const totalPrice = document.querySelector("#totalPrice")
-    cart.forEach((item) => {
-        const totalUnitePrice = item.price * item.quantity
-        total += totalUnitePrice
-        totalPrice.textContent = total
-    })
-    
-}
+    const total = cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    totalPrice.textContent = total
+  }
 function constructCartContent(item) {
     const cardItemContent = document.createElement("div")
     cardItemContent.classList.add("cart__item__content")
@@ -78,17 +69,17 @@ function itemDelete(item) {
     const deleteToItem = cart.findIndex(
     (product) => product.id === item.id && product.color === item.color
     )
-cart.splice(deleteToItem,1)
+cart.splice(deleteToItem, 1)
 console.log(cart)
 showTotalQuantity()
 showTotalPrice()
 deleteDataToCache(item)
 deleteArticle(item)
-
 }
+
 function deleteDataToCache(item) {
-    const newKey = `${item.id}-${item.color}`
-    localStorage.removeItem(newKey)
+    const key = `${item.id}-${item.color}`
+    localStorage.removeItem(key)
 }
 function deleteArticle(item) {
     const articleDelete = document.querySelector ( 
@@ -118,13 +109,10 @@ function quantitySettings(settings,item) {
 
 }
 function updatePriceAndQuantity(id, newValue, item) {
-    console.log(id)
-    const itemToUpdate = cart.find(item => item.id === id)
-    console.log ( "itemToUpdate", itemToUpdate)
-    console.log ("newValue", newValue)
+    const itemToUpdate = cart.find((item) => item.id === id)
+    itemToUpdate.quantity = Number(newValue)
     item.quantity = itemToUpdate.quantity
 
-    itemToUpdate.quantity = Number(newValue)
     showTotalQuantity()
     showTotalPrice()
     saveNewDataToCache(item)
@@ -133,8 +121,8 @@ function updatePriceAndQuantity(id, newValue, item) {
 }
 function  saveNewDataToCache(item) {
     const dataToSave = JSON.stringify((item))
-    const newKey =`${item.id}-${item.color}`
-    localStorage.setItem(newKey, dataToSave)
+    const Key =`${item.id}-${item.color}`
+    localStorage.setItem(Key, dataToSave)
 }
 
 
@@ -143,9 +131,9 @@ function constructDescription(item) {
     description.classList.add("cart__item__content__description")
 
     const h2 = document.createElement("h2")
-    h2.textContent = item.name;
+    h2.textContent = item.name
     const p = document.createElement("p")
-    p.textContent = item.color;
+    p.textContent = item.color
     const p2 = document.createElement("p")
     p2.textContent = item.price + " €" 
 
@@ -155,7 +143,7 @@ function constructDescription(item) {
     return description
 
 }
-function displayArticle(article) {
+function showArticle(article) {
     document.querySelector("#cart__items").appendChild(article)
 }
 

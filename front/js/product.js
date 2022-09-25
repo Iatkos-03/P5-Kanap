@@ -22,14 +22,14 @@ function operateKanap(kanap) {
     imagUrl = imageUrl
     altTexte = altTxt
     articleName = name
-    constructImage(imageUrl, altTxt)
+    makeImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
-    constructDescription(description)
+    makeDescription(description)
     makeColors(colors)
 }
 
-function constructImage(imageUrl, altTxt) {
+function makeImage(imageUrl, altTxt) {
    const image = document.createElement("img")
    image.src = imageUrl
    image.alt = altTxt
@@ -47,7 +47,7 @@ function makePrice(price) {
     const span = document.querySelector("#price")
     if (span != null) span.textContent = price
 }
-function constructDescription(description) {
+function makeDescription(description) {
     const p = document.querySelector("#description")
     if (p != null) p.textContent = description
 }
