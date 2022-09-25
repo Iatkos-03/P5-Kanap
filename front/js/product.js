@@ -40,7 +40,6 @@ function makeImage(imageUrl, altTxt) {
 function makeTitle(name) {
     const h1 = document.querySelector("#title")
     if (h1 != null) h1.textContent= name
-    console.log(name)
 }
 
 function makePrice(price) {
@@ -58,7 +57,6 @@ function makeColors(colors) {
             const option = document.createElement("option")
             option.value = color
             option.textContent= color
-            console.log(option)
             select.appendChild(option)
         })
     }
