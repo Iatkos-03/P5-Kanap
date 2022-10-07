@@ -1,5 +1,6 @@
 const cart = []  
 
+// fonction pour récupérer les données par le biais du local storage
 ItemsCache()
 cart.forEach((item) => showItem(item)) 
 function ItemsCache() {
@@ -10,6 +11,10 @@ function ItemsCache() {
         cart.push(itemObjet)
     }
 }
+const orderButton = document.querySelector("#order")
+orderButton.addEventListener("click", (event) =>  formSubmit(event))
+
+// affichage des éléments
 function showItem(item) {
     const article = constructArticle(item)
     const imageDiv = constructImage(item)
@@ -22,12 +27,13 @@ function showItem(item) {
     showArticle(article)  
 
 }
+// affichage de la quantité
 function showTotalQuantity() {
     const totalQuantity = document.querySelector("#totalQuantity")
     const total = cart.reduce((total, item) => total + item.quantity, 0)
     totalQuantity.textContent = total
-    console.log(total)
 }
+// affichage du prix
 function showTotalPrice() {
     const totalPrice = document.querySelector("#totalPrice")
     const total = cart.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -78,18 +84,16 @@ deleteDataToCache(item)
 deleteArticle(item)
 }
 
-function deleteDataToCache(item) {
-    const key = `${item.id}-${item.color}`
-    localStorage.removeItem(key)
-}
+// fonction pour supprimer un produit
 function deleteArticle(item) {
-    const articleDelete = document.querySelector ( 
-       `article[data-id="${item.id}"][data-color="${item.color}"]` 
-       )
-       articleDelete.remove()
-
-}
-function quantitySettings(settings,item) {
+  const articleDelete = document.querySelector ( 
+    `article[data-id="${item.id}"][data-color="${item.color}"]` 
+    )
+    articleDelete.remove()
+    
+  }
+  // affichage des produits
+  function quantitySettings(settings,item) {
     const quantity = document.createElement("div")
     quantity.classList.add("cart__item__content__settings__quantity")
     const p = document.createElement("p")
@@ -106,24 +110,29 @@ function quantitySettings(settings,item) {
     
     quantity.appendChild(input)
     settings.appendChild(quantity)
-
-}
-function updatePriceAndQuantity(id, newValue, item) {
+    
+  }
+  // fonction pour modifier la quantité et le prix
+  function updatePriceAndQuantity(id, newValue, item) {
     const itemToUpdate = cart.find((item) => item.id === id)
     itemToUpdate.quantity = Number(newValue)
     item.quantity = itemToUpdate.quantity
     showTotalQuantity()
     showTotalPrice()
     saveNewDataToCache(item)
-
-
-}
-function  saveNewDataToCache(item) {
+    
+    
+  }
+  function saveNewDataToCache(item) {
     const dataToSave = JSON.stringify(item)
     const key =`${item.id}-${item.color}`
     localStorage.setItem(key, dataToSave)
-}
-
+  }
+  function deleteDataToCache(item) {
+      const key = `${item.id}-${item.color}`
+      localStorage.removeItem(key)
+  }
+  
 
 function constructDescription(item) {
     const description = document.createElement("div")
@@ -163,3 +172,67 @@ function constructImage(item) {
     div.appendChild(image)
     return div
 }
+function formSubmit(event) {
+    event.preventDefault()
+    const body = requestBody()
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+    }
+    function requestBody() {
+        const form = document.querySelector(".cart__order__form")
+        const firstName = form.elements.firstName.value
+        const lastName = form.elements.lastName.value
+        const address = form.elements.address.value
+        const city = form.elements.city.value
+        const email = form.elements.email.value
+
+    const body = {
+        contact: {
+          firstName: firstName,
+          lastName: lastName,
+          address: address,
+          city: city,
+          email: email,
+        },
+        products: idLocalStorage()
+      }
+      return body
+    }
+  // function error ------------------------------------
+/*const errorPrenom = () => {
+    const errorMsgPrenom = document.getElementById("firstNameErrorMsg");
+    errorMsgPrenom.innerHTML = "Erreur de saisie";
+  };
+  const errorNom = () => {
+    const errorMsgNom = document.getElementById("lastNameErrorMsg");
+    errorMsgNom.innerHTML = "Erreur de saisie";
+  };
+  const errorAdress = () => {
+    const errorMsgAdress = document.getElementById("addressErrorMsg");
+    errorMsgAdress.innerHTML = "Erreur de saisie";
+  };
+  const errorVille = () => {
+    const errorMsgVille = document.getElementById("cityErrorMsg");
+    errorMsgVille.innerHTML = "Erreur de saisie";
+  };
+  const errorEmail = () => {
+    const errorMsgEmail = document.getElementById("emailErrorMsg");
+    errorMsgEmail.innerHTML = "Erreur de saisie";
+  }*/
+    function idLocalStorage() {
+        const numberProducts = localStorage.length
+        const idProducts = []
+        for (let i = 0; i < numberProducts; i++) {
+          const keyProducts = localStorage.key(i)
+          const id = keyProducts.split("-")[0]
+          idProducts.push(id)
+        }
+        return idProducts
+      }
